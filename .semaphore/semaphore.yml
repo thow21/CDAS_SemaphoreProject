@@ -17,9 +17,12 @@ blocks:
           - export GOPATH=~/go
           - export PATH=/home/semaphore/go/bin:$PATH
           - sem-service start postgres
-          - sleep 5  # wait for PostgreSQL to be ready
-          - psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE testdb;" || true
-          - export DATABASE_URL=postgres://postgres@localhost:5432/testdb?sslmode=disable
+          - sleep 5  # Give PostgreSQL time to start
+          - psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE postgres;" || true
+          # Set your app-specific DB credentials
+          - export APP_DB_USERNAME=postgres
+          - export APP_DB_PASSWORD=postgres
+          - export APP_DB_NAME=postgres
       jobs:
         - name: go test
           commands:
