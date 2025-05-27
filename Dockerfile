@@ -13,11 +13,11 @@ RUN ls
 
 RUN go mod tidy
 
-# Build the GO app as myapp binary and move it to /usr/
-RUN go build -o myapp . && mv myapp /usr/
+# Build the GO app as mySemaphoreApp binary and move it to /usr/
+RUN go build -o mySemaphoreApp . && mv mySemaphoreApp /usr/
 
 #Expose port 8010
 EXPOSE 8010
 
-# Run the service myapp when a container of this image is launched
-CMD ["/usr/myapp"]
+# Run the service mySemaphoreApp when a container of this image is launched
+CMD ["/usr/mySemaphoreApp"]

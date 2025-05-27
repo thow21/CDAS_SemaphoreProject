@@ -1,5 +1,5 @@
 version: v1.0
-name: Go with PostgreSQL
+name: Build, Test and Push to Docker Hub
 
 agent:
   machine:
@@ -17,9 +17,7 @@ blocks:
           - export GOPATH=~/go
           - export PATH=/home/semaphore/go/bin:$PATH
           - sem-service start postgres
-          - sleep 5  # Give PostgreSQL time to start
-          - psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE postgres;" || true
-          # Set your app-specific DB credentials
+          - sleep 5
           - export APP_DB_USERNAME=postgres
           - export APP_DB_PASSWORD=postgres
           - export APP_DB_NAME=postgres
@@ -29,3 +27,15 @@ blocks:
             - go get ./...
             - go test ./...
             - go build -v .
+
+  - name: Build & Push Docker Image
+    task:
+      secrets:
+        - name: docker-hub-creds
+      jobs:
+        - name: docker build and push
+          commands:
+            - checkout
+            - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            - docker build -t thow2025/semaphore-project:latest .
+            - docker push thow2025/semaphore-project:latest
